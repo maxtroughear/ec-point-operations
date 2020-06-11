@@ -5,20 +5,35 @@ import (
 	"math/big"
 )
 
+var curve = ECCurve{
+	a: big.NewInt(2),
+	b: big.NewInt(3),
+	p: big.NewInt(29),
+}
+
+var basePoint = ECPoint{
+	curve: &curve,
+	x:     big.NewInt(8),
+	y:     big.NewInt(3),
+}
+
 func main() {
-	curve := ECCurve{
-		a: big.NewInt(2),
-		b: big.NewInt(3),
-		p: big.NewInt(29),
-	}
+	log.Printf("Curve parameters: a: %s, b: %s, p: %s",
+		curve.a.String(),
+		curve.b.String(),
+		curve.p.String(),
+	)
+	log.Printf("Base point: (%s,%s)", basePoint.x.String(), basePoint.y.String())
+	// calculateManually(basePoint)
 
-	basePoint := ECPoint{
-		curve: &curve,
-		x:     big.NewInt(8),
-		y:     big.NewInt(3),
-	}
-	basePoint.Log(1)
+	DoubleAndAdd(basePoint, 2).Log(2)
 
+	DoubleAndAdd(basePoint, 8).Log(8)
+
+	DoubleAndAdd(basePoint, 17).Log(17)
+}
+
+func calculateManually(basePoint ECPoint) {
 	twoP := basePoint.Double()
 	twoP.Log(2)
 
@@ -33,17 +48,15 @@ func main() {
 
 	seventeenP := sixteenP.Add(basePoint)
 	seventeenP.Log(17)
-
-	DoubleAndAdd(basePoint, 8).Log(8)
 }
 
 func DoubleAndAdd(p ECPoint, d int) ECPoint {
 	if d == 0 {
 		return ECPoint{}
-	} else if (d == 1) { 
+	} else if d == 1 {
 		return p
-	} else if (d % 2 == 1) {
-		return p.Add(DoubleAndAdd(p, d - 1)) // when d is odd, perform addition
+	} else if d%2 == 1 {
+		return p.Add(DoubleAndAdd(p, d-1)) // when d is odd, perform addition
 	} else {
 		return DoubleAndAdd(p.Double(), d/2) // otherwise, double
 	}
