@@ -34,18 +34,20 @@ func main() {
 	seventeenP := sixteenP.Add(basePoint)
 	seventeenP.Log(17)
 
+	DoubleAndAdd(basePoint, 8).Log(8)
 }
 
-// func DoubleandAdd(P ECPoint) float64 {
-// 	T := P
-// 	for i := t - 1; i >= 0; i-- {
-// 		T =
-// 		if di == 1 {
-// 			T += math.Mod(P, n)
-// 		}
-// 	}
-// 	return T
-// }
+func DoubleAndAdd(p ECPoint, d int) ECPoint {
+	if d == 0 {
+		return ECPoint{}
+	} else if (d == 1) { 
+		return p
+	} else if (d % 2 == 1) {
+		return p.Add(DoubleAndAdd(p, d - 1)) // when d is odd, perform addition
+	} else {
+		return DoubleAndAdd(p.Double(), d/2) // otherwise, double
+	}
+}
 
 // ECCurve struct
 type ECCurve struct {
@@ -82,17 +84,6 @@ func (p ECPoint) Add(q ECPoint) ECPoint {
 				p.curve.p,
 			),
 		)
-	// h :=
-	// 	new(big.Int).Div(
-	// 		new(big.Int).Sub(
-	// 			q.y,
-	// 			p.y,
-	// 		),
-	// 		new(big.Int).Sub(
-	// 			q.x,
-	// 			p.x,
-	// 		),
-	// 	)
 
 	return p.internalAdd(q, h)
 }
@@ -121,8 +112,6 @@ func (p ECPoint) Double() ECPoint {
 			),
 		)
 
-	//h := (3*math.Pow(p.x, 2) + p.curve.a) /
-	//	modInverse(new(big.Int).Mul(p.x, big.NewInt(2)), p.curve.p)
 	return p.internalAdd(q, h)
 }
 
@@ -158,8 +147,6 @@ func (p ECPoint) internalAdd(q ECPoint, h *big.Int) ECPoint {
 			p.curve.p,
 		)
 
-	//r.x = math.Pow(h, 2) - p.x - q.x
-	//r.y = h*(p.x-r.x) - p.y
 	return r
 }
 
