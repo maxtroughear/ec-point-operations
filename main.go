@@ -24,6 +24,7 @@ func main() {
 		curve.p.String(),
 	)
 	log.Printf("Base point: (%s,%s)", basePoint.x.String(), basePoint.y.String())
+
 	// calculateManually(basePoint)
 
 	DoubleAndAdd(basePoint, 2).Log(2)
@@ -50,6 +51,7 @@ func calculateManually(basePoint ECPoint) {
 	seventeenP.Log(17)
 }
 
+// DoubleAndAdd recursively calculate nP of ECPoint p
 func DoubleAndAdd(p ECPoint, d int) ECPoint {
 	if d == 0 {
 		return ECPoint{}
